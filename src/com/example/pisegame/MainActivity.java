@@ -33,12 +33,12 @@ public class MainActivity extends Activity {
         getWindow().setFlags(
         	    WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
         	    WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
+        int rotation = getWindowManager().getDefaultDisplay().getRotation();
         //Ball ball = new Ball(this);
         //setContentView(ball);
-        setContentView(new DoodleSurfaceView(this));
+        setContentView(new DoodleSurfaceView(this, rotation));
         
     }
-    
     
 
 /*

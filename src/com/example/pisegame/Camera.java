@@ -6,6 +6,7 @@ public class Camera {
 	Vector2 deltaPos;
 	private float speed;
 	private float offSet;
+	
 	public Camera(Vector2 p, float s, float off) {
 		pos = p;
 		deltaPos = p;

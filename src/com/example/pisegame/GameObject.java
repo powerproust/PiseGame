@@ -40,18 +40,24 @@ public class GameObject {
 		pos = pos.Add(cam);
 	}
 	
-	public void draw(Canvas c, Vector2 camPos, float heightScreen) {
+	public int draw(Canvas c, Vector2 camPos, float heightScreen) {
 		
 		if(cI.aabb.max.y >= camPos.y && cI.aabb.min.y <= camPos.y + heightScreen) {
 			//c.save();
-			//paint.setColor(Color.RED);
-	        //paint.setStyle(Style.FILL);
-			//for(int i = 0; i < cI.vectCirc.size() ; i++) {
-				//c.drawCircle(cI.vectCirc.get(i).pos.x, cI.vectCirc.get(i).pos.y, cI.vectCirc.get(i).radius, paint);
-			//}
-			
+			/*
+			paint.setColor(Color.RED);
+	        paint.setStyle(Style.FILL);
+			for(int i = 0; i < cI.vectCirc.size() ; i++) {
+				c.drawCircle(cI.vectCirc.get(i).pos.x, cI.vectCirc.get(i).pos.y, cI.vectCirc.get(i).radius, paint);
+			}
+			*/
 			c.drawBitmap(picture, pos.x, pos.y, paint);
 			//c.restore();
+			return 1;
+		} else if (cI.aabb.max.y <= camPos.y) {
+			return 2;
+		} else {
+			return 3;
 		}
 		
 	}

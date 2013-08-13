@@ -34,7 +34,7 @@ public class GameEngine {
 	float widthRealScreen;
 	float heightRealScreen;
 	float ratioScreenW;
-
+	int nbObjectDraw;
 	float wantedScreenW;
 	float wantedScreenH;
 
@@ -50,6 +50,7 @@ public class GameEngine {
 
 	public GameEngine(Vector2 d, Context ctx, float widthS, float heightS,
 			float widthHS) {
+		nbObjectDraw = 0;
 		context = ctx;
 		numEnnemy = 0;
 		drag = d;
@@ -106,6 +107,10 @@ public class GameEngine {
 		} else {
 			drag.Set(0, defaultDrag.y);
 		}
+		
+		if(player.v.y >= 20.0f) {
+			
+		}
 
 		// Using Newton's equation !
 		// object.v += (dt/object.mass) * object.forces;
@@ -158,6 +163,7 @@ public class GameEngine {
 	}
 
 	public void doDraw(Canvas c) {
+		nbObjectDraw = 0;
 		// Log.d(TAG, "SCREEN :" + x + " " + y);
 		c.scale((float) 1.25, (float) 1.25);
 
@@ -165,16 +171,27 @@ public class GameEngine {
 
 		// Vector2 nul = new Vector2(0,0);
 		if (currentBackground != null) {
-			currentBackground.draw(c, cam.pos, wantedScreenH);
+			if(currentBackground.draw(c, cam.pos, wantedScreenH) == 1) {
+				nbObjectDraw += 1;
+			}
 		}
 		if (nextBackground != null) {
-			nextBackground.draw(c, cam.pos, wantedScreenH);
+			if(nextBackground.draw(c, cam.pos, wantedScreenH) == 1) {
+				nbObjectDraw += 1;
+			}
 		}
 		player.draw(c, cam.pos, wantedScreenH);
 		for (int i = 0; i < vectGameObj.size(); i++) {
-			vectGameObj.get(i).draw(c, cam.pos, wantedScreenH);
+			
+			int result = vectGameObj.get(i).draw(c, cam.pos, wantedScreenH);
+			
+			if (result == 3) {
+				this.AddDeleteObject(vectGameObj.get(i));
+			} else if (result == 1) {
+				nbObjectDraw += 1;
+			}
 		}
-
+		nbObjectDraw += 1;
 		paint.setColor(Color.BLACK);
 		// c.drawRect(heightRealScreen - wantedScreenH, widthRealScreen - 940,
 		// heightRealScreen - wantedScreenH, widthRealScreen - 940, paint);
@@ -186,6 +203,7 @@ public class GameEngine {
 		c.translate(640, 0);
 		c.drawRect(0, 0, 300, heightRealScreen, paint);
 		c.restore();
+		DeleteObject();
 	}
 
 	public void GenWorld() {
@@ -272,19 +290,18 @@ public class GameEngine {
 	public void CheckCollision() {
 
 		for (int i = 0; i < vectGameObj.size(); i++) {
-			if (vectGameObj.get(i).toString() == "star") {
-				if (vectGameObj.get(i).cI.AABBvsAABB(player.cI)) {
-					if (vectGameObj.get(i).toString() == "tree") {
-						player.v.x = 0;
-						Vector2 imp = new Vector2(0, 10);
-						this.GiveImpulse(imp);
-					}
+			if (vectGameObj.get(i).cI.AABBvsAABB(player.cI)) {
+				if (vectGameObj.get(i).toString() == "tree") {
+					Log.d(TAG, "TREE !");
+					player.v.x = 0;
+					Vector2 imp = new Vector2(0, 10);
+					this.GiveImpulse(imp);
+				}
 
-					if (vectGameObj.get(i).toString() == "star") {
-						Vector2 imp = new Vector2(0, -100);
-						this.GiveImpulse(imp);
-						toDeleteGameObj.add(vectGameObj.get(i));
-					}
+				if (vectGameObj.get(i).toString() == "star") {
+					Vector2 imp = new Vector2(0, -100);
+					this.GiveImpulse(imp);
+					toDeleteGameObj.add(vectGameObj.get(i));
 				}
 			}
 		}
@@ -306,7 +323,6 @@ public class GameEngine {
 		 * GiveImpulse(imp); }
 		 */
 
-		DeleteObject();
 	}
 
 	public void SetPlayer(PhysicObject p) {
@@ -320,6 +336,18 @@ public class GameEngine {
 		impulse = impulse.Add(vec);
 		player.v = player.v.Add(vec);
 		// player.forces = player.forces.Add(vec);
+	}
+
+	public int GetNumberObjectTotal() {
+		return vectGameObj.size() + 2;
+	}
+	
+	public int GetNumberObjectDraw() {
+		return nbObjectDraw;
+	}
+
+	public void AddDeleteObject(GameObject obj) {
+		toDeleteGameObj.add(obj);
 	}
 
 	public void DeleteObject() {
