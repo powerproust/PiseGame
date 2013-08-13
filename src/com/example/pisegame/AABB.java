@@ -1,23 +1,22 @@
 package com.example.pisegame;
 
+import com.example.pisegame.DoodleSurfaceView.DoodleThread;
+
+import android.util.Log;
+
 public class AABB {
 	Vector2 min;
 	Vector2 max;
+	float halfX;
+	float halfY;
+	
+	private final String TAG = DoodleThread.class.getSimpleName();
 
-	public AABB() {
-
-	}
-
-	public static boolean AABBvsAABB (AABB a, AABB b){
-		
-		if(a.max.x < b.min.x || a.min.x > a.max.x) {
-			return false;
-		}
-		if(a.max.y < b.min.y || a.min.y > b.max.y) {
-			return false;
-		}
-		return true;
-		
+	public AABB(Vector2 mi, Vector2 ma, float hx, float hy) {
+		min = mi;
+		max = ma;
+		halfX = hx;
+		halfY = hy;
 	}
 	
 }

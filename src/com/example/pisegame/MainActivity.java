@@ -1,5 +1,6 @@
 package com.example.pisegame;
 
+import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.hardware.Sensor;
@@ -7,6 +8,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
@@ -26,12 +28,13 @@ public class MainActivity extends Activity {
         //setContentView(R.layout.activity_main);
         setContentView(text);
         */
-        //requestWindowFeature(Window.FEATURE_NO_TITLE);
-        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(
+        	    WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
+        	    WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
         //Ball ball = new Ball(this);
         //setContentView(ball);
-        
         setContentView(new DoodleSurfaceView(this));
         
     }
