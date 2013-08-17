@@ -6,6 +6,9 @@ import android.content.pm.ActivityInfo;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
@@ -17,17 +20,6 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        
-        /*
-        String hello = getResources().getString(R.string.hello_world);
-        // Au lieu d'afficher "Hello World!" on va afficher "Hello les Zéros !"
-        hello = hello.replace("world", "les Zéros ");
-         
-        TextView text = new TextView(this);
-        text.setText(hello);
-        //setContentView(R.layout.activity_main);
-        setContentView(text);
-        */
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().setFlags(
@@ -36,11 +28,39 @@ public class MainActivity extends Activity {
         int rotation = getWindowManager().getDefaultDisplay().getRotation();
         //Ball ball = new Ball(this);
         //setContentView(ball);
-        setContentView(new DoodleSurfaceView(this, rotation));
         
+        
+        
+        setContentView(new DoodleSurfaceView(this, rotation));
     }
     
+// Partie MENU : ¨¤ voir comment l'int¨¦grer aux codes
+    
+//    public boolean onCreateOptionsMenu(Menu menu) { 
+//	    MenuInflater inflater = getMenuInflater();
+//	    inflater.inflate(R.menu.my_menu, menu);
+//	    return true;
+//	}
+//	// faut faire en sorte que le menu soit lanc¨¦ au d¨¦marrage de l'appli
+//	
+//	public boolean onOptionsItemSelected(MenuItem item) { //ce qui se passe lors des clics
+//	    switch (item.getItemId()) {
+//	        case R.id.open:
+//	        	// lancer le jeu
+//	            return true;
+//	        case R.id.save:
+//	            // lancer sauvegarde
+//	            return true;
+//	        case R.id.how:
+//	            // lancer manuel
+//	            return true;
+//	        default:
+//	            return super.onOptionsItemSelected(item);
+//	    }
+//	}
 
+    
+    
 /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
