@@ -20,7 +20,8 @@
         android:id="@+id/Button01"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/bt_start" />
+        android:text="@string/bt_start"
+        android:onClick="rungame" />
 
     <Button
         android:id="@+id/Button02"
