@@ -32,9 +32,6 @@ public class MainMenu extends Activity {
         	public void onClick(View v){
         		Intent intent = new Intent(MainMenu.this, MainActivity.class);
         		startActivity(intent);
-//        		Context context = getApplicationContext();
-//        		int duration = Toast.LENGTH_SHORT;
-//        		Toast.makeText(context, "Button1", duration).show();
             	}
         	});
         b2.setOnClickListener(new Button.OnClickListener() {  
