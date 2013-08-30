@@ -30,9 +30,11 @@ public class MainMenu extends Activity {
         // linking menu buttons to different views
         b1.setOnClickListener(new Button.OnClickListener() {  
         	public void onClick(View v){
-        		Context context = getApplicationContext();
-        		int duration = Toast.LENGTH_SHORT;
-        		Toast.makeText(context, "Button1", duration).show();
+        		Intent intent = new Intent(MainMenu.this, MainActivity.class);
+        		startActivity(intent);
+//        		Context context = getApplicationContext();
+//        		int duration = Toast.LENGTH_SHORT;
+//        		Toast.makeText(context, "Button1", duration).show();
             	}
         	});
         b2.setOnClickListener(new Button.OnClickListener() {  
