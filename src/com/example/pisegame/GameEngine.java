@@ -20,7 +20,6 @@ public class GameEngine {
 
 	Vector<GameObject> vectGameObj;
 	Vector<GameObject> toDeleteGameObj;
-	// Vector<PhysicObject> vectPhysicObj;
 	Vector<GameObject> fields;
 	Vector2 drag;
 	Vector2 defaultDrag;
@@ -37,12 +36,12 @@ public class GameEngine {
 	int nbObjectDraw;
 	float wantedScreenW;
 	float wantedScreenH;
-
-	int numEnnemy;
-	int numTree;
+	int turbRessource;
+	int numTurbo;
+	int score;
 
 	Bitmap bgPict;
-	Bitmap enPict;
+	Bitmap turbPict;
 	Bitmap treePict;
 	Bitmap starPict;
 
@@ -50,9 +49,11 @@ public class GameEngine {
 
 	public GameEngine(Vector2 d, Context ctx, float widthS, float heightS,
 			float widthHS) {
+		turbRessource = 5;
+		numTurbo = 0;
+		score = 0;
 		nbObjectDraw = 0;
 		context = ctx;
-		numEnnemy = 0;
 		drag = d;
 		defaultDrag = new Vector2(d.x, d.y);
 		impulse = new Vector2(0, 0);
@@ -63,25 +64,18 @@ public class GameEngine {
 		widthRealScreen = widthS;
 		heightRealScreen = heightS;
 
-		// float actualRatio = heightRealScreen / widthRealScreen;
-		// wantedScreenH = wantedScreenW * actualRatio;
 		ratioScreenW = widthRealScreen / wantedScreenW;
 		wantedScreenH = 896;
-		// ratioScreenH = (640*1.4)/heightRealScreen;
 
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inPreferredConfig = Config.RGB_565;
 		bgPict = BitmapFactory.decodeResource(context.getResources(),
 				R.drawable.bggame, options);
-		bgPict = Bitmap.createScaledBitmap(bgPict, 640, 900, false);
-		/*
-		 * (int) (bgPict.getWidth() * (bgPict.getWidth()/640)), (int)
-		 * (bgPict.getHeight() * (bgPict.getHeight()/1088)), false);
-		 */
+		bgPict = Bitmap.createScaledBitmap(bgPict, 640, 1024, false);
 
-		enPict = BitmapFactory.decodeResource(context.getResources(),
-				R.drawable.mainttree, options);
-		enPict = Bitmap.createScaledBitmap(enPict, 128, 128, false);
+		turbPict = BitmapFactory.decodeResource(context.getResources(),
+				R.drawable.turbo, options);
+		turbPict = Bitmap.createScaledBitmap(turbPict, 64, 64, false);
 
 		treePict = BitmapFactory.decodeResource(context.getResources(),
 				R.drawable.mainttree, options);
@@ -89,16 +83,21 @@ public class GameEngine {
 
 		starPict = BitmapFactory.decodeResource(context.getResources(),
 				R.drawable.star, options);
-		// starPict = Bitmap.createScaledBitmap(starPict, 64, 64, false);
 
 		Vector2 otherpos = new Vector2(0, 0);
 		nextBackground = new GameObject(otherpos, bgPict, "bg");
 		currentBackground = null;
-
+		for (int j = 0; j < 9; j++) {
+			for (int i = 0; i < 5; i++) {
+				Vector2 temp = new Vector2(i * 128, (j * 128) - 512);
+				if (i == 0 || i == 4) {
+					this.AddTree(temp);
+				}
+			}
+		}
 	}
 
 	public void step(float dt) {
-		// CheckCollision
 		CheckCollision();
 
 		if (player.v.y >= 0) {
@@ -107,9 +106,9 @@ public class GameEngine {
 		} else {
 			drag.Set(0, defaultDrag.y);
 		}
-		
-		if(player.v.y >= 20.0f) {
-			
+
+		if (player.v.y >= 20.0f) {
+			player.v.y = 20.0f;
 		}
 
 		// Using Newton's equation !
@@ -133,7 +132,7 @@ public class GameEngine {
 		player.forces.Set(0.0, 0.0);
 
 		// cam.MoveAlongY(dt);
-
+		GenWorld();
 		cam.UpdateCam(player);
 		player.UpdateCam(cam.deltaPos);
 		player.UpdateCollisionIdentity();
@@ -149,52 +148,60 @@ public class GameEngine {
 		if (currentBackground != null) {
 			currentBackground.UpdateCam(cam.deltaPos);
 			currentBackground.UpdateCollisionIdentity();
-
 		}
+
 		if (nextBackground != null) {
 			nextBackground.UpdateCam(cam.deltaPos);
 			nextBackground.UpdateCollisionIdentity();
 		}
-
-		// GenWorld();
-		// Log.d(TAG, "FINAL POS : " + player.pos.x + " " + player.pos.y);
-		GenWorld();
 		cam.ResetDeltaPos();
 	}
 
 	public void doDraw(Canvas c) {
 		nbObjectDraw = 0;
-		// Log.d(TAG, "SCREEN :" + x + " " + y);
+
 		c.scale((float) 1.25, (float) 1.25);
 
 		c.drawColor(Color.WHITE);
 
-		// Vector2 nul = new Vector2(0,0);
 		if (currentBackground != null) {
-			if(currentBackground.draw(c, cam.pos, wantedScreenH) == 1) {
+			if (currentBackground.draw(c, cam.pos, wantedScreenH) == 1) {
 				nbObjectDraw += 1;
 			}
 		}
 		if (nextBackground != null) {
-			if(nextBackground.draw(c, cam.pos, wantedScreenH) == 1) {
+			if (nextBackground.draw(c, cam.pos, wantedScreenH) == 1) {
 				nbObjectDraw += 1;
 			}
 		}
-		player.draw(c, cam.pos, wantedScreenH);
+
 		for (int i = 0; i < vectGameObj.size(); i++) {
-			
-			int result = vectGameObj.get(i).draw(c, cam.pos, wantedScreenH);
-			
-			if (result == 3) {
-				this.AddDeleteObject(vectGameObj.get(i));
-			} else if (result == 1) {
-				nbObjectDraw += 1;
+			if (vectGameObj.get(i).toString() != "tree") {
+				int result = vectGameObj.get(i).draw(c, cam.pos, wantedScreenH);
+
+				if (result == 1) {
+					nbObjectDraw += 1;
+				} else if (result == 3) {
+					this.AddDeleteObject(vectGameObj.get(i));
+				}
+			}
+		}
+
+		player.draw(c, cam.pos, wantedScreenH);
+
+		for (int i = 0; i < vectGameObj.size(); i++) {
+			if (vectGameObj.get(i).toString() == "tree") {
+				int result = vectGameObj.get(i).draw(c, cam.pos, wantedScreenH);
+
+				if (result == 1) {
+					nbObjectDraw += 1;
+				} else if (result == 3) {
+					this.AddDeleteObject(vectGameObj.get(i));
+				}
 			}
 		}
 		nbObjectDraw += 1;
 		paint.setColor(Color.BLACK);
-		// c.drawRect(heightRealScreen - wantedScreenH, widthRealScreen - 940,
-		// heightRealScreen - wantedScreenH, widthRealScreen - 940, paint);
 		c.save();
 		c.translate(0, 896);
 		c.drawRect(0, 0, widthRealScreen, 300, paint);
@@ -203,48 +210,105 @@ public class GameEngine {
 		c.translate(640, 0);
 		c.drawRect(0, 0, 300, heightRealScreen, paint);
 		c.restore();
+		// Log.d(TAG, "NUMBER DELETE BEFORE DELETE :" + toDeleteGameObj.size());
 		DeleteObject();
 	}
 
 	public void GenWorld() {
-		Vector2 desiredY = new Vector2(0, cam.pos.y - 896);
+		// Vector2 desiredY = new Vector2(0, cam.pos.y - 896);
 
-		if (nextBackground.pos.y >= cam.pos.y) {
-
+		if (nextBackground.pos.y >= cam.pos.y - 128) {
+			Log.d(TAG, "GEN WORLD !");
 			currentBackground = nextBackground;
 			nextBackground = null;
-			// otherpict = Bitmap.createScaledBitmap(otherpict, 800, 1232,
-			// false);
 			Vector2 bgPos = new Vector2(0, cam.pos.y - wantedScreenH);
 			nextBackground = new GameObject(bgPos, bgPict, "bg");
-
-			Log.d(TAG, "HERE BITCHES !");
-
+			numTurbo = 0;
 			Vector2 genPos = cam.pos;
+			int widthTree = 1;
+			Vector<Integer> vectTree = new Vector();
+			boolean other = true;
+			Random r = new Random();
 
-			for (int j = 0; j < 9; j++) {
-				for (int i = 0; i < 5; i++) {
-
-					Vector2 temp = new Vector2(i * 128, (j * 128) - 896);
-					if (i == 0 || i == 4) {
-						this.CreateTree(genPos.Add(temp));
-					} else {
-						Random r = new Random();
-						int randomInt = r.nextInt(4);
-						switch (randomInt) {
-						case 1:
-							break;
-						case 2:
-							this.CreateStar(genPos.Add(temp));
-							break;
-						case 3:
-							// this.CreateTree(genPos.Add(temp));
-							break;
-						}
-					}
-				}
+			if (score < 30) {
+				widthTree = 1;
+			} else if (score < 60) {
+				widthTree = r.nextInt(3) + 1;
+			} else if (score < 100) {
+				widthTree = r.nextInt(4) + 1;
+			} else {
+				widthTree = r.nextInt(4) + 2;
 			}
 
+			if (widthTree == 1) {
+				vectTree.clear();
+				vectTree.add(0);
+				vectTree.add(4);
+			} else if (widthTree == 2) {
+				vectTree.clear();
+				vectTree.add(0);
+				vectTree.add(4);
+				vectTree.add(1);
+			} else if (widthTree == 3) {
+				vectTree.clear();
+				vectTree.add(0);
+				vectTree.add(4);
+				vectTree.add(3);
+			} else if (widthTree == 4) {
+				vectTree.clear();
+				vectTree.add(0);
+				vectTree.add(4);
+				vectTree.add(1);
+				vectTree.add(3);
+			}
+
+			for (int j = 0; j < 6; j++) {
+				for (int i = 0; i < 5; i++) {
+					other = true;
+					Vector2 temp = new Vector2(i * 128, (j * 128) - 1024);
+					for (int z = 0; z < vectTree.size(); z++) {
+						if (i == vectTree.get(z)) {
+							this.AddTree(genPos.Add(temp));
+							other = false;
+						}
+					}
+					if (other == true) {
+
+						int randomObj = r.nextInt(3) + 1;
+						Log.d(TAG, "RANDOM OBJ" + randomObj);
+						if (randomObj == 1) {
+							int randomStar = r.nextInt(1) + 1;
+							if (randomStar == 1) {
+								this.AddStar(genPos.Add(temp));
+							}
+						} else if (randomObj == 2) {
+							int randomTurb = r.nextInt(8) + 1;
+							int maxTurb = 1;
+							int minTurb = 1;
+
+							if (player.v.y > -250) {
+								maxTurb = 8;
+							} else if (player.v.y < -200) {
+								minTurb = 0;
+								maxTurb = 0;
+							}
+
+							if (randomTurb >= minTurb && randomTurb <= maxTurb
+									&& numTurbo < 1) {
+								this.AddTurbo(genPos.Add(temp));
+								numTurbo++;
+							}
+						} else if (randomObj == 3) {
+							int randomTree = r.nextInt(6) + 1;
+
+							if (randomTree == 1) {
+								this.AddTree(genPos.Add(temp));
+							}
+						}
+					}
+
+				}
+			}
 		}
 	}
 
@@ -252,17 +316,42 @@ public class GameEngine {
 		vectGameObj.add(p);
 	}
 
-	public void CreateEnnemy(Vector2 pos) {
-		Log.d(TAG, "CREATE ENNEMY :" + pos.x + " " + pos.y);
+	public void AddTurbo(Vector2 pos) {
+		/*
+		 * Log.d(TAG, "ADD TURBO");
+		 * 
+		 * for (int j = 0; j < toDeleteGameObj.size(); j++) { if
+		 * (toDeleteGameObj.get(j).toString() == "turbo") { Log.d(TAG,
+		 * "FIND OBJECT TO MOVE !"); toDeleteGameObj.get(j).pos.Set(pos.x,
+		 * pos.y); // vectGameObj.add(toDeleteGameObj.get(j));
+		 * this.AddGameObject(toDeleteGameObj.get(j));
+		 * toDeleteGameObj.remove(j); return; } }
+		 */
 		Vector2 newPos = new Vector2(pos.x, pos.y);
-		GameObject enemy = new GameObject(newPos, enPict, "enn");
-		this.AddGameObject(enemy);
+		GameObject turbo = new GameObject(newPos, turbPict, "turbo");
+		Circle c1 = new Circle(newPos, 40, turbPict.getWidth() / 2,
+				turbPict.getHeight() / 2);
+		turbo.AddCircle(c1);
+		this.AddGameObject(turbo);
 	}
 
-	public void CreateTree(Vector2 pos) {
-		Log.d(TAG, "CREATE TREE !");
-		Vector2 newPos = new Vector2(pos.x, pos.y);
+	public void AddTree(Vector2 pos2) {
+		Log.d(TAG, "ADD TREE !");
 
+		for (int j = 0; j < toDeleteGameObj.size(); j++) {
+			if (toDeleteGameObj.get(j).toString() == "tree") {
+				Log.d(TAG, "FIND OBJECT TO MOVE !" + pos2.x + " " + pos2.y);
+				toDeleteGameObj.get(j).pos.Set(pos2.x, pos2.y);
+
+				this.AddGameObject(toDeleteGameObj.get(j));
+
+				toDeleteGameObj.removeElementAt(j);
+
+				return;
+			}
+		}
+
+		Vector2 newPos = new Vector2(pos2.x, pos2.y);
 		GameObject tree = new GameObject(newPos, treePict, "tree");
 		Circle c1 = new Circle(newPos, 35, treePict.getWidth() / 2,
 				treePict.getHeight() / 2 - 10);
@@ -273,12 +362,20 @@ public class GameEngine {
 		this.AddGameObject(tree);
 	}
 
-	public void CreateStar(Vector2 pos) {
-		Log.d(TAG, "CREATE STAR !");
+	public void AddStar(Vector2 pos) {
+		/*
+		 * Log.d(TAG, "ADD STAR !");
+		 * 
+		 * for (int j = 0; j < toDeleteGameObj.size(); j++) { if
+		 * (toDeleteGameObj.get(j).toString() == "star") { Log.d(TAG,
+		 * "FIND OBJECT TO MOVE !"); toDeleteGameObj.get(j).pos.Set(pos.x,
+		 * pos.y); // vectGameObj.add(toDeleteGameObj.get(j));
+		 * this.AddGameObject(toDeleteGameObj.get(j));
+		 * toDeleteGameObj.remove(j); return; } }
+		 */
 		Vector2 newPos = new Vector2(pos.x, pos.y);
-
 		GameObject star = new GameObject(newPos, starPict, "star");
-		Circle c1 = new Circle(newPos, 16, starPict.getWidth() / 2,
+		Circle c1 = new Circle(newPos, 30, starPict.getWidth() / 2,
 				starPict.getHeight() / 2);
 		star.AddCircle(c1);
 		this.AddGameObject(star);
@@ -287,6 +384,7 @@ public class GameEngine {
 	/*
 	 * public void CreatePhysicObject(PhysicObject p) { vectPhysicObj.add(p); }
 	 */
+
 	public void CheckCollision() {
 
 		for (int i = 0; i < vectGameObj.size(); i++) {
@@ -294,35 +392,23 @@ public class GameEngine {
 				if (vectGameObj.get(i).toString() == "tree") {
 					Log.d(TAG, "TREE !");
 					player.v.x = 0;
-					Vector2 imp = new Vector2(0, 10);
+					Vector2 imp = new Vector2(0, 100);
 					this.GiveImpulse(imp);
 				}
 
 				if (vectGameObj.get(i).toString() == "star") {
-					Vector2 imp = new Vector2(0, -100);
+					toDeleteGameObj.add(vectGameObj.get(i));
+					score++;
+				}
+
+				if (vectGameObj.get(i).toString() == "turbo") {
+					Vector2 imp = new Vector2(0, -150);
 					this.GiveImpulse(imp);
 					toDeleteGameObj.add(vectGameObj.get(i));
 				}
+
 			}
 		}
-		/*
-		 * if (vectGameObj.get(i).aabb.AABBvsAABB(player.aabb) == 1) {
-		 * 
-		 * Log.d(TAG, "COLLATERAL COLLISION !"); //Vector2 vec = new Vector2(1,
-		 * 0); player.v.x = 0; Vector2 imp = new Vector2(0, 10);
-		 * this.GiveImpulse(imp);
-		 * 
-		 * } else if (vectGameObj.get(i).aabb.AABBvsAABB(player.aabb) == 2) {
-		 * 
-		 * Log.d(TAG, "COLLATERAL COLLISION !"); //Vector2 vec = new Vector2(-1,
-		 * 0); player.v.x = 0; Vector2 imp = new Vector2(0, 10);
-		 * this.GiveImpulse(imp);
-		 * 
-		 * } else if (vectGameObj.get(i).aabb.AABBvsAABB(player.aabb) == 3) {
-		 * Log.d(TAG, "VERTICAL COLLISION !"); Vector2 imp = new Vector2(0, 10);
-		 * GiveImpulse(imp); }
-		 */
-
 	}
 
 	public void SetPlayer(PhysicObject p) {
@@ -330,24 +416,41 @@ public class GameEngine {
 		player.pos.Set(640 / 2 - 32, 896 / 2 + 250);
 		Vector2 posCam = new Vector2(0, 0);
 		cam = new Camera(posCam, (float) 10.0, player.pos.y);
+		Vector2 imp = new Vector2(0, -100);
+		this.GiveImpulse(imp);
+		Vector2 posTurb = new Vector2(640 / 2 - 48, (896 / 2 + 250) - 100);
+		this.AddTurbo(posTurb);
+		Vector2 posTurb2 = new Vector2(640 / 2 - 48, (896 / 2 + 250) - 170);
+		this.AddTurbo(posTurb2);
 	}
 
 	public void GiveImpulse(Vector2 vec) {
 		impulse = impulse.Add(vec);
 		player.v = player.v.Add(vec);
-		// player.forces = player.forces.Add(vec);
 	}
 
 	public int GetNumberObjectTotal() {
 		return vectGameObj.size() + 2;
 	}
-	
+
 	public int GetNumberObjectDraw() {
 		return nbObjectDraw;
 	}
 
+	public int GetNumberObjectToDelete() {
+		return toDeleteGameObj.size();
+	}
+
 	public void AddDeleteObject(GameObject obj) {
 		toDeleteGameObj.add(obj);
+	}
+
+	public void UseTurb() {
+		if (turbRessource > 0) {
+			turbRessource--;
+			Vector2 imp = new Vector2(0, -50);
+			this.GiveImpulse(imp);
+		}
 	}
 
 	public void DeleteObject() {

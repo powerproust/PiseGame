@@ -29,6 +29,7 @@ public final class R {
         public static final int spriteexample=0x7f020005;
         public static final int star=0x7f020006;
         public static final int tree=0x7f020007;
+        public static final int turbo=0x7f020008;
     }
     public static final class id {
         public static final int action_settings=0x7f080000;

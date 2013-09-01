@@ -43,19 +43,12 @@ public class DoodleSurfaceView extends SurfaceView implements
 		GameEngine world;
 		Circle c1;
 		PhysicObject ball;
-		private float[] lastAccelerometer = new float[3];
-		private float[] lastMagnetometer = new float[3];
-		private boolean lastAccelerometerSet = false;
-		private boolean lastMagnetometerSet = false;
 		private float orientation;
-		private float[] rotationMatrix = new float[9];
-		private float[] orientationAngle = new float[3];
 		private Direction dir;
 		private float[] coefLatSpeed = new float[3];
 
 		private SensorManager sensorManager;
 		private Sensor accelerometer;
-		private Sensor magnetometer;
 
 		private final String TAG = DoodleThread.class.getSimpleName();
 
@@ -77,8 +70,6 @@ public class DoodleSurfaceView extends SurfaceView implements
 			coefLatSpeed[0] = (float) 0.2;
 			coefLatSpeed[1] = (float) 0.6;
 			coefLatSpeed[2] = 1;
-			lastAccelerometerSet = true;
-			lastMagnetometerSet = true;
 			orientation = 0.0f;
 			dir = Direction.MIDDLE;
 		}
@@ -93,7 +84,7 @@ public class DoodleSurfaceView extends SurfaceView implements
 				 * metrics.heightPixels;
 				 */
 				// Create World and set drag
-				Vector2 drag = new Vector2(0, 5);
+				Vector2 drag = new Vector2(0, 10);
 				world = new GameEngine(drag, ctx, surfaceWidth, surfaceHeight,
 						(float) 640);
 
@@ -106,14 +97,14 @@ public class DoodleSurfaceView extends SurfaceView implements
 
 				Vector2 posC = new Vector2(150, 300);
 				ball = new PhysicObject(posC, pict, "player");
-				c1 = new Circle(posC, 20, (pict.getWidth() / 2),
+				c1 = new Circle(posC, 25, (pict.getWidth() / 2),
 						(pict.getHeight() / 2));
 
 				ball.AddCircle(c1);
 				world.SetPlayer(ball);
 
-				Vector2 otherpos = new Vector2(200, 300);
-				world.CreateTree(otherpos);
+				//Vector2 otherpos = new Vector2(200, 300);
+				//world.AddTree(otherpos);
 			}
 		}
 
@@ -179,6 +170,7 @@ public class DoodleSurfaceView extends SurfaceView implements
 		private void doDraw(Canvas canvas) {
 			if (canvas != null) {
 				world.doDraw(canvas);
+				
 				paint.setColor(Color.RED);
 				paint.setStyle(Style.FILL);
 				// canvas.drawCircle(c1.pos.x+150, c1.pos.y+150, c1.radius,
@@ -187,8 +179,14 @@ public class DoodleSurfaceView extends SurfaceView implements
 				// ball.pos.y+150, paint);
 
 				Paint paint = new Paint();
-				paint.setColor(Color.BLACK);
+				paint.setColor(Color.WHITE);
 				paint.setTextSize(20);
+				canvas.drawText("SCORE : " + Integer.toString(world.score), 10, 25, paint);
+				canvas.drawText("RESSOURCES : " + Integer.toString(world.turbRessource), 10, 50, paint);
+				//canvas.drawText("SCORE : " + Integer.toString(world.score), 10, 25, paint);
+				//canvas.drawText("SPEED : " + Float.toString(world.player.v.y), 10, 50, paint);
+				
+				/*
 				canvas.drawText("FPS : " + Integer.toString(fps), 10, 25, paint);
 				canvas.drawText(
 						"Obj Total : "
@@ -199,7 +197,13 @@ public class DoodleSurfaceView extends SurfaceView implements
 						"Obj draw : "
 								+ Integer.toString(world.GetNumberObjectDraw()),
 						10, 75, paint);
+				canvas.drawText(
+						"Obj to delete : "
+								+ Integer.toString(world.GetNumberObjectToDelete()),
+						10, 100, paint);
+						*/
 			}
+			
 		}
 
 		@Override
@@ -217,29 +221,7 @@ public class DoodleSurfaceView extends SurfaceView implements
 				} else {
 					xOrientation = event.values[1];
 				}
-
-				/*
-				 * if (event.sensor == accelerometer) {
-				 * System.arraycopy(event.values, 0, lastAccelerometer, 0,
-				 * event.values.length); lastAccelerometerSet = true; } else if
-				 * (event.sensor == magnetometer) {
-				 * System.arraycopy(event.values, 0, lastMagnetometer, 0,
-				 * event.values.length); lastMagnetometerSet = true; }
-				 * 
-				 * if (lastAccelerometerSet && lastMagnetometerSet) {
-				 * SensorManager.getRotationMatrix(rotationMatrix, null,
-				 * lastAccelerometer, lastMagnetometer);
-				 * SensorManager.getOrientation(rotationMatrix,
-				 * orientationAngle);
-				 * 
-				 * for (int i = 0; i < orientationAngle.length; i++) {
-				 * orientationAngle[i] = (float) (orientationAngle[i] * (180 /
-				 * PI)); }
-				 * 
-				 * 
-				 * }
-				 */
-				// world.drag.Set(orientationAngle[1]*factSpeed, world.drag.y);
+				
 				restartDirection();
 
 				if (xOrientation >= 1.0 && xOrientation <= 9.8) {
@@ -344,10 +326,7 @@ public class DoodleSurfaceView extends SurfaceView implements
 				thread.setRunning(false);
 				((Activity) getContext()).finish();
 			} else {
-				Log.d(TAG, "Coords: x=" + event.getX() + ",y=" + event.getY());
-				Vector2 imp = new Vector2(0, -10);
-				thread.world.GiveImpulse(imp);
-				// thread.world.drag.Set(0, 0);
+				thread.world.UseTurb();
 			}
 		}
 
@@ -366,32 +345,5 @@ public class DoodleSurfaceView extends SurfaceView implements
 			}
 		}
 	}
-	/*
-	 * @Override protected void onMeasure(int widthMeasureSpec, int
-	 * heightMeasureSpec) {
-	 * 
-	 * int desiredWidth = 200; int desiredHeight = 400;
-	 * 
-	 * int widthMode = MeasureSpec.getMode(widthMeasureSpec); int widthSize =
-	 * MeasureSpec.getSize(widthMeasureSpec); int heightMode =
-	 * MeasureSpec.getMode(heightMeasureSpec); int heightSize =
-	 * MeasureSpec.getSize(heightMeasureSpec);
-	 * 
-	 * int width; int height;
-	 * 
-	 * //Measure Width if (widthMode == MeasureSpec.EXACTLY) { //Must be this
-	 * size width = desiredWidth; //width = desiredWidth; } else if (widthMode
-	 * == MeasureSpec.AT_MOST) { //Can't be bigger than... //width =
-	 * Math.min(desiredWidth, widthSize); width = desiredWidth; } else { //Be
-	 * whatever you want width = desiredWidth; }
-	 * 
-	 * //Measure Height if (heightMode == MeasureSpec.EXACTLY) { //Must be this
-	 * size height = desiredHeight; } else if (heightMode ==
-	 * MeasureSpec.AT_MOST) { //Can't be bigger than... //height =
-	 * Math.min(desiredHeight, heightSize); height = desiredHeight; } else {
-	 * //Be whatever you want height = desiredHeight; }
-	 * 
-	 * //MUST CALL THIS setMeasuredDimension(width, height); }
-	 */
 
 }

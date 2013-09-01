@@ -50,16 +50,23 @@ public class GameObject {
 			for(int i = 0; i < cI.vectCirc.size() ; i++) {
 				c.drawCircle(cI.vectCirc.get(i).pos.x, cI.vectCirc.get(i).pos.y, cI.vectCirc.get(i).radius, paint);
 			}
+			
+			paint.setColor(Color.BLUE);
+	        paint.setStyle(Style.FILL);
+			c.drawCircle(cI.aabb.min.x, cI.aabb.min.y, 5, paint);
+			paint.setColor(Color.BLACK);
+	        paint.setStyle(Style.FILL);
+			c.drawCircle(cI.aabb.max.x, cI.aabb.max.y, 5, paint);
 			*/
+			
 			c.drawBitmap(picture, pos.x, pos.y, paint);
-			//c.restore();
 			return 1;
 		} else if (cI.aabb.max.y <= camPos.y) {
 			return 2;
-		} else {
+		} else if(cI.aabb.min.y >= camPos.y + heightScreen){
 			return 3;
 		}
-		
+		return 0;
 	}
 	
 	public void UpdateCollisionIdentity() {
