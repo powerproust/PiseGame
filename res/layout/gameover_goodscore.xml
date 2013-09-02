@@ -7,12 +7,21 @@
     android:gravity="center_horizontal|center_vertical"
     android:orientation="vertical" >
 
+	<TextView
+	    android:id="@+id/textView1"
+	    android:layout_width="270dp"
+	    android:layout_height="wrap_content"
+	    android:gravity="center"
+	    android:text="@string/gameover"
+	    android:textAppearance="?android:attr/textAppearanceMedium"
+	    android:textSize="28sp" />
+
     <TextView
-        android:id="@+id/textView1"
-        android:layout_width="300dp"
+        android:id="@+id/textView2"
+        android:layout_width="270dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingBottom="30dp"
+        android:paddingBottom="15dp"
         android:text="@string/gameover_good"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textSize="28sp" />
@@ -22,15 +31,15 @@
 	    android:layout_width="300dp"
 	    android:layout_height="wrap_content"
 	    android:gravity="center"
-	    android:text="@string/addcomment"
-	    android:textSize="15sp" >
+		android:hint="@string/addtext"
+	    android:textSize="13sp" >
 	 
 	        <requestFocus />
 	</EditText>
     <Button
         android:id="@+id/button1"
+        android:layout_width="160dp"
         style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/saveandback" />
 

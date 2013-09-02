@@ -39,7 +39,7 @@ public class GameEngine {
 	float wantedScreenH;
 	int turbRessource;
 	int numTurbo;
-	int score;
+	public static int score;
 
 	Bitmap bgPict;
 	Bitmap turbPict;
@@ -110,6 +110,7 @@ public class GameEngine {
 		if (player.v.y<0){  // TESTING
 			CheckCollision();
 			if (player.v.y >= 0) {
+				finalscore.fscore=this.score;
 				player.v.y = 0;
 				this.drag.Set(0, 0);
 				startActivity(); // GAME OVER

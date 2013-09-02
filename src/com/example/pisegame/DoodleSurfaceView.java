@@ -26,7 +26,7 @@ import android.view.WindowManager;
 public class DoodleSurfaceView extends SurfaceView implements
 		SurfaceHolder.Callback {
 
-	class DoodleThread extends Thread implements SensorEventListener {
+	public class DoodleThread extends Thread implements SensorEventListener {
 		private int surfaceWidth = 200;
 		private int surfaceHeight = 400;
 
@@ -40,7 +40,7 @@ public class DoodleSurfaceView extends SurfaceView implements
 		float accDt = 0;
 		float accT = 0;
 		float frameStart;
-		GameEngine world;
+		public GameEngine world;
 		Circle c1;
 		PhysicObject ball;
 		private float orientation;

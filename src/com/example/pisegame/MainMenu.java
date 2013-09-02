@@ -10,7 +10,6 @@ import android.content.Intent;
 
 public class MainMenu extends Activity {
 	Button b1;
-//	Button b2;
 	Button b3;
 	Button b4;
 	
@@ -18,7 +17,6 @@ public class MainMenu extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu); 
         Button b1 = (Button)findViewById(R.id.Button01);
-//        Button b2 = (Button)findViewById(R.id.Button02);
         Button b3 = (Button)findViewById(R.id.Button03);
         Button b4 = (Button)findViewById(R.id.Button04);
         
@@ -29,18 +27,12 @@ public class MainMenu extends Activity {
         		startActivity(intent);
             	}
         	});
-//        b2.setOnClickListener(new Button.OnClickListener() {  
-//        	public void onClick(View v){
-//        		Context context = getApplicationContext();
-//        		int duration = Toast.LENGTH_SHORT;
-//        		Toast.makeText(context, "Button2", duration).show();
-//            	}
-//        	});
         b3.setOnClickListener(new Button.OnClickListener() {  
         	public void onClick(View v){
-        		Context context = getApplicationContext();
-        		int duration = Toast.LENGTH_SHORT;
-        		Toast.makeText(context, "Button3", duration).show();
+//        		VIEW SCORE
+//        		Context context = getApplicationContext();
+//        		int duration = Toast.LENGTH_SHORT;
+//        		Toast.makeText(context, "Button3", duration).show();
             	}
         	});
         b4.setOnClickListener(new Button.OnClickListener() {  // pour avoir l'explication du jeu
