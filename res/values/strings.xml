@@ -11,6 +11,9 @@
     <string name="howto">In this game you have to control the direction of the rolling ball. You should do it by changing the position of your phone. The ball accelerates when it touches a star. It slows down when it crashes into a tree. Keep it rolling. If it stops the game will be over! Good luck!!</string>
 	<string name="howto_title">How to play this game?</string>
     <string name="backtomenu">OK, go back to menu</string>
-    <string name="gameover">Game over! So bad...</string>
+    <string name="gameover">Game over! So bad.</string>
+    <string name="gameover_good">Game over! But your score has been saved to the top 5 list! Congratulations!</string>
+    <string name="addcomment">Add comment to your score here</string>
+    <string name="saveandback">Save my comment and go back to menu</string>
     
 </resources>

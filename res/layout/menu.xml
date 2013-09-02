@@ -23,11 +23,11 @@
         android:text="@string/bt_start"
         android:onClick="rungame" />
 
-    <Button
-        android:id="@+id/Button02"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/bt_load" />
+<!--     <Button -->
+<!--         android:id="@+id/Button02" -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:text="@string/bt_load" /> -->
 
     <Button
         android:id="@+id/Button03"

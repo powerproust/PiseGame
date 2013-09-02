@@ -6,6 +6,7 @@ import java.util.Vector;
 import com.example.pisegame.DoodleSurfaceView.DoodleThread;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
@@ -97,40 +98,47 @@ public class GameEngine {
 		}
 	}
 
+	
+	public GameEngine(Context context){
+		this.context = context;
+	}
+	public void startActivity(){
+		Intent intent = new Intent(context, GameOver.class);
+		context.startActivity(intent);
+	}
 	public void step(float dt) {
-		CheckCollision();
-
-		if (player.v.y >= 0) {
-			player.v.y = 0;
-			this.drag.Set(0, 0);
-		} else {
-			drag.Set(0, defaultDrag.y);
+		if (player.v.y<0){  // TESTING
+			CheckCollision();
+			if (player.v.y >= 0) {
+				player.v.y = 0;
+				this.drag.Set(0, 0);
+				startActivity(); // GAME OVER
+			} else {
+				drag.Set(0, defaultDrag.y);
+			}
+			if (player.v.y >= 20.0f) {
+				player.v.y = 20.0f;
+			}
+			// Using Newton's equation !
+			// object.v += (dt/object.mass) * object.forces;
+			// object.pos += dt * object.v;
+	
+			// F = m1*m2/d²
+			// ->(m2/d²)*m1
+			Vector2 dragMass = drag.MultByScalar(player.mass);
+			// Log.d(TAG, "DRAG :" + drag.x + " " + drag.y);
+			player.forces = player.forces.Add(dragMass);
+	
+			// We look at how forces affects the body regarding to its mass
+			player.forces = player.forces.MultByScalar(dt / player.mass);
+			player.v = player.v.Add(player.forces);
+			Vector2 finalV = player.v.MultByScalar(dt);
+			player.pos = player.pos.Add(finalV);
+			// Log.d(TAG, "VELOCITY :" + finalV.x + " " + finalV.y);
+	
+			// Log.d(TAG, "FINAL POS : " + vectObject.get(i).pos.x + " " +
+			player.forces.Set(0.0, 0.0);
 		}
-
-		if (player.v.y >= 20.0f) {
-			player.v.y = 20.0f;
-		}
-
-		// Using Newton's equation !
-		// object.v += (dt/object.mass) * object.forces;
-		// object.pos += dt * object.v;
-
-		// F = m1*m2/d²
-		// ->(m2/d²)*m1
-		Vector2 dragMass = drag.MultByScalar(player.mass);
-		// Log.d(TAG, "DRAG :" + drag.x + " " + drag.y);
-		player.forces = player.forces.Add(dragMass);
-
-		// We look at how forces affects the body regarding to its mass
-		player.forces = player.forces.MultByScalar(dt / player.mass);
-		player.v = player.v.Add(player.forces);
-		Vector2 finalV = player.v.MultByScalar(dt);
-		player.pos = player.pos.Add(finalV);
-		// Log.d(TAG, "VELOCITY :" + finalV.x + " " + finalV.y);
-
-		// Log.d(TAG, "FINAL POS : " + vectObject.get(i).pos.x + " " +
-		player.forces.Set(0.0, 0.0);
-
 		// cam.MoveAlongY(dt);
 		GenWorld();
 		cam.UpdateCam(player);
