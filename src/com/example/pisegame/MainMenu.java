@@ -29,10 +29,8 @@ public class MainMenu extends Activity {
         	});
         b3.setOnClickListener(new Button.OnClickListener() {  
         	public void onClick(View v){
-//        		VIEW SCORE
-//        		Context context = getApplicationContext();
-//        		int duration = Toast.LENGTH_SHORT;
-//        		Toast.makeText(context, "Button3", duration).show();
+        		Intent intent = new Intent(MainMenu.this, TopScores.class);
+        		startActivity(intent);
             	}
         	});
         b4.setOnClickListener(new Button.OnClickListener() {  // pour avoir l'explication du jeu
