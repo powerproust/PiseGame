@@ -14,8 +14,7 @@
     <string name="gameover">Game over!</string>
     <string name="gameover_good">But your score will be in the top 5 list! Congratulations!</string>
     <string name="addcomment">You may add comment to your score here</string>
-    <string name="saveandback">Save my comment and go back to menu</string>
-    <string name="addtext">You may add some comment to your score</string>
+    <string name="saveandback">Go back to menu</string>
     <string name="date1">date1</string>
     <string name="score1">score1</string>
     <string name="date2">date2</string>

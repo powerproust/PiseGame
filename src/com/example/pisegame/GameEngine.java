@@ -5,6 +5,7 @@ import java.util.Vector;
 
 import com.example.pisegame.DoodleSurfaceView.DoodleThread;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -27,6 +28,7 @@ public class GameEngine {
 	private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	Vector2 impulse;
 	PhysicObject player;
+	boolean playerDead;
 	Camera cam;
 	GameObject currentBackground;
 	GameObject nextBackground;
@@ -39,7 +41,7 @@ public class GameEngine {
 	float wantedScreenH;
 	int turbRessource;
 	int numTurbo;
-	public static int score;
+	public int score;
 
 	Bitmap bgPict;
 	Bitmap turbPict;
@@ -50,9 +52,10 @@ public class GameEngine {
 
 	public GameEngine(Vector2 d, Context ctx, float widthS, float heightS,
 			float widthHS) {
+		playerDead = false;
 		turbRessource = 5;
 		numTurbo = 0;
-		score = 0;
+		score = 50;
 		nbObjectDraw = 0;
 		context = ctx;
 		drag = d;
@@ -102,10 +105,8 @@ public class GameEngine {
 	public GameEngine(Context context){
 		this.context = context;
 	}
-	public void startActivity(){
-		Intent intent = new Intent(context, GameOver.class);
-		context.startActivity(intent);
-	}
+	
+	
 	public void step(float dt) {
 		if (player.v.y<0){  // TESTING
 			CheckCollision();
@@ -113,7 +114,7 @@ public class GameEngine {
 				finalscore.fscore=this.score;
 				player.v.y = 0;
 				this.drag.Set(0, 0);
-				startActivity(); // GAME OVER
+				playerDead = true;
 			} else {
 				drag.Set(0, defaultDrag.y);
 			}

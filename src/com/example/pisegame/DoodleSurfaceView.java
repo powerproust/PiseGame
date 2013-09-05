@@ -2,6 +2,7 @@ package com.example.pisegame;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -46,14 +47,14 @@ public class DoodleSurfaceView extends SurfaceView implements
 		private float orientation;
 		private Direction dir;
 		private float[] coefLatSpeed = new float[3];
-
+		boolean close;
 		private SensorManager sensorManager;
 		private Sensor accelerometer;
 
 		private final String TAG = DoodleThread.class.getSimpleName();
 
 		public DoodleThread(Handler handler) {
-
+			close = true;
 			Handler handler1 = handler;
 			sensorManager = (SensorManager) ctx
 					.getSystemService(Context.SENSOR_SERVICE);
@@ -103,8 +104,8 @@ public class DoodleSurfaceView extends SurfaceView implements
 				ball.AddCircle(c1);
 				world.SetPlayer(ball);
 
-				//Vector2 otherpos = new Vector2(200, 300);
-				//world.AddTree(otherpos);
+				// Vector2 otherpos = new Vector2(200, 300);
+				// world.AddTree(otherpos);
 			}
 		}
 
@@ -153,6 +154,21 @@ public class DoodleSurfaceView extends SurfaceView implements
 
 		private void UpdatePhysics(float dt) {
 			world.step(dt);
+			if (world.playerDead == true) {
+				startActivity();
+			}
+		}
+
+		public void startActivity() {
+			if(close == true) {
+				close = false;
+				System.out.println("START GAME OVER FUCKERS !");
+				Intent intent = new Intent(ctx, GameOver.class);
+				intent.putExtra("SCORE", world.score);
+				ctx.startActivity(intent);
+				thread.setRunning(false);
+				((Activity) getContext()).finish();	
+			}
 		}
 
 		public void setRunning(boolean b) {
@@ -170,7 +186,7 @@ public class DoodleSurfaceView extends SurfaceView implements
 		private void doDraw(Canvas canvas) {
 			if (canvas != null) {
 				world.doDraw(canvas);
-				
+
 				paint.setColor(Color.RED);
 				paint.setStyle(Style.FILL);
 				// canvas.drawCircle(c1.pos.x+150, c1.pos.y+150, c1.radius,
@@ -181,29 +197,28 @@ public class DoodleSurfaceView extends SurfaceView implements
 				Paint paint = new Paint();
 				paint.setColor(Color.WHITE);
 				paint.setTextSize(20);
-				canvas.drawText("SCORE : " + Integer.toString(world.score), 10, 25, paint);
-				canvas.drawText("RESSOURCES : " + Integer.toString(world.turbRessource), 10, 50, paint);
-				//canvas.drawText("SCORE : " + Integer.toString(world.score), 10, 25, paint);
-				//canvas.drawText("SPEED : " + Float.toString(world.player.v.y), 10, 50, paint);
-				
-				/*
-				canvas.drawText("FPS : " + Integer.toString(fps), 10, 25, paint);
+				canvas.drawText("SCORE : " + Integer.toString(world.score), 10,
+						25, paint);
 				canvas.drawText(
-						"Obj Total : "
-								+ Integer
-										.toString(world.GetNumberObjectTotal()),
+						"RESSOURCES : " + Integer.toString(world.turbRessource),
 						10, 50, paint);
-				canvas.drawText(
-						"Obj draw : "
-								+ Integer.toString(world.GetNumberObjectDraw()),
-						10, 75, paint);
-				canvas.drawText(
-						"Obj to delete : "
-								+ Integer.toString(world.GetNumberObjectToDelete()),
-						10, 100, paint);
-						*/
+				// canvas.drawText("SCORE : " + Integer.toString(world.score),
+				// 10, 25, paint);
+				// canvas.drawText("SPEED : " +
+				// Float.toString(world.player.v.y), 10, 50, paint);
+
+				/*
+				 * canvas.drawText("FPS : " + Integer.toString(fps), 10, 25,
+				 * paint); canvas.drawText( "Obj Total : " + Integer
+				 * .toString(world.GetNumberObjectTotal()), 10, 50, paint);
+				 * canvas.drawText( "Obj draw : " +
+				 * Integer.toString(world.GetNumberObjectDraw()), 10, 75,
+				 * paint); canvas.drawText( "Obj to delete : " +
+				 * Integer.toString(world.GetNumberObjectToDelete()), 10, 100,
+				 * paint);
+				 */
 			}
-			
+
 		}
 
 		@Override
@@ -221,7 +236,7 @@ public class DoodleSurfaceView extends SurfaceView implements
 				} else {
 					xOrientation = event.values[1];
 				}
-				
+
 				restartDirection();
 
 				if (xOrientation >= 1.0 && xOrientation <= 9.8) {

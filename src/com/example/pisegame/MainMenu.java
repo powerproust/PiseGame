@@ -25,18 +25,21 @@ public class MainMenu extends Activity {
         	public void onClick(View v){
         		Intent intent = new Intent(MainMenu.this, MainActivity.class);
         		startActivity(intent);
+        		finish();
             	}
         	});
         b3.setOnClickListener(new Button.OnClickListener() {  
         	public void onClick(View v){
         		Intent intent = new Intent(MainMenu.this, TopScores.class);
         		startActivity(intent);
+        		finish();
             	}
         	});
         b4.setOnClickListener(new Button.OnClickListener() {  // pour avoir l'explication du jeu
         	public void onClick(View v){
         		Intent intent = new Intent(MainMenu.this, Howto.class);
         		startActivity(intent);
+        		finish();
             	}
         	});
     }

@@ -17,6 +17,7 @@ public class Howto extends Activity{
         	public void onClick(View v){
         		Intent intent = new Intent(Howto.this, MainMenu.class);
         		startActivity(intent);
+        		finish();
             	}
         	});
 	}

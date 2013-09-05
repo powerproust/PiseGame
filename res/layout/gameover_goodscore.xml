@@ -25,17 +25,6 @@
         android:text="@string/gameover_good"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textSize="28sp" />
-
-	<EditText
-	    android:id="@+id/editText1"
-	    android:layout_width="300dp"
-	    android:layout_height="wrap_content"
-	    android:gravity="center"
-		android:hint="@string/addtext"
-	    android:textSize="13sp" >
-	 
-	        <requestFocus />
-	</EditText>
     <Button
         android:id="@+id/button1"
         android:layout_width="160dp"
