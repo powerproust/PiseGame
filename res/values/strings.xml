@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Ultime projet!!</string>
+    <string name="app_name">PISE Game</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Welcome to this fun game!</string>
     <string name="bt_start">Start the game!</string>
-    <string name="bt_load">Load previous game</string>
-    <string name="bt_score">View my scores</string>
+    <string name="bt_score">View top 5 scores</string>
     <string name="bt_howto">How to play?</string>
     <string name="bt_exit">Exit</string>
-    <string name="howto">In this game you have to control the direction of the rolling ball. You should do it by changing the position of your phone. The ball accelerates when it touches a star. It slows down when it crashes into a tree. Keep it rolling. If it stops the game will be over! Good luck!!</string>
+    <string name="howto1">In this game you have to control the direction of a moving object. </string>
+    <string name="howto2">You can move the object to the left or the right by inclining your phone. It accelerates when it touches a turbo: </string> 
+    <string name="howto3">It slows down when it crashes into a tree: </string>
+    <string name="howto4">Bumping into stars increases your score: </string>
+    <string name="howto5">So keep it rolling! If it stops the game will be over! Good luck!!</string>
 	<string name="howto_title">How to play this game?</string>
     <string name="backtomenu">OK, go back to menu</string>
     <string name="gameover">Game over!</string>
-    <string name="gameover_good">It will be in the top 5 list! Congratulations!</string>
+    <string name="gameover_good">You are one of the top 5! Congratulations!</string>
     <string name="addcomment">You may add comment to your score here</string>
     <string name="saveandback">Go back to menu</string>
     <string name="date1">date1</string>

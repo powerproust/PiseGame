@@ -55,7 +55,7 @@ public class GameEngine {
 		playerDead = false;
 		turbRessource = 5;
 		numTurbo = 0;
-		score = 50;
+		score = 0;
 		nbObjectDraw = 0;
 		context = ctx;
 		drag = d;
@@ -111,7 +111,7 @@ public class GameEngine {
 		if (player.v.y<0){  // TESTING
 			CheckCollision();
 			if (player.v.y >= 0) {
-				finalscore.fscore=this.score;
+				//finalscore.fscore=this.score;
 				player.v.y = 0;
 				this.drag.Set(0, 0);
 				playerDead = true;

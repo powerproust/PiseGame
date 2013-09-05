@@ -35,7 +35,7 @@
         android:textSize="28sp" />
     <Button
         android:id="@+id/button1"
-        android:layout_width="160dp"
+        android:layout_width="240dp"
         style="?android:attr/buttonStyleSmall"
         android:layout_height="wrap_content"
         android:text="@string/saveandback" />
