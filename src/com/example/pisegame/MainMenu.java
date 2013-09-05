@@ -19,6 +19,7 @@ public class MainMenu extends Activity {
         Button b1 = (Button)findViewById(R.id.Button01);
         Button b3 = (Button)findViewById(R.id.Button03);
         Button b4 = (Button)findViewById(R.id.Button04);
+        Button b5 = (Button)findViewById(R.id.Button05);
         
         // linking menu buttons to different views
         b1.setOnClickListener(new Button.OnClickListener() {  
@@ -39,6 +40,11 @@ public class MainMenu extends Activity {
         	public void onClick(View v){
         		Intent intent = new Intent(MainMenu.this, Howto.class);
         		startActivity(intent);
+        		finish();
+            	}
+        	});
+        b5.setOnClickListener(new Button.OnClickListener() {  // pour quitter
+        	public void onClick(View v){
         		finish();
             	}
         	});

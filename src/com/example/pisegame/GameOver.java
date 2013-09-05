@@ -12,6 +12,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class GameOver extends Activity {
 public static final String topscore = "MyPreferencesFile"; // la constante indispensable
@@ -58,6 +59,8 @@ public static final String topscore = "MyPreferencesFile"; // la constante indis
             
             editor.commit();
           setContentView(R.layout.gameover_goodscore);
+          TextView yrsc=(TextView)findViewById(R.id.yrscore);
+          yrsc.setText("Your score is: "+value);
           Button okback = (Button)findViewById(R.id.button1);
           okback.setOnClickListener(new Button.OnClickListener() {  
           	public void onClick(View v){
@@ -65,7 +68,6 @@ public static final String topscore = "MyPreferencesFile"; // la constante indis
           		startActivity(intent);
               	}
           	});
-        
         }
         else{
         	Collections.reverse(unsortList);
